@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Categoria - Cadastro de Produtos</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="/produtos" class="brand">Loja MVC</a>
+    <div class="nav-links">
+      <a href="/produtos">Produtos</a>
+      <a href="/produtos/novo">+ Novo Produto</a>
+      <a href="/categorias">Categorias</a>
+      <a href="/categorias/nova">+ Nova Categoria</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="card" style="max-width: 500px; margin: 2rem auto;">
+      <div class="page-header">
+        <h1>Nova Categoria</h1>
+      </div>
+
+      <form action="/categorias" method="POST">
+        <div class="form-group">
+          <label for="nome">Nome da Categoria:</label>
+          <input 
+            type="text" 
+            id="nome" 
+            name="nome" 
+            placeholder="Ex: Informática, Periféricos, Áudio..." 
+            required
+          >
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Salvar Categoria</button>
+          <a href="/categorias" class="btn btn-secondary">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+</body>
+</html>

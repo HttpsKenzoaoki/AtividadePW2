@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Produtos - MVC</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="/produtos" class="brand">Loja MVC</a>
+    <div class="nav-links">
+      <a href="/produtos">Produtos</a>
+      <a href="/produtos/novo">+ Novo Produto</a>
+      <a href="/categorias">Categorias</a>
+      <a href="/categorias/nova">+ Nova Categoria</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="card">
+      <div class="page-header">
+        <h1>
+          <% if (categoriaAtual) { %>
+            Produtos da Categoria: <%= categoriaAtual.nome %>
+          <% } else if (termoBusca) { %>
+            Resultado da busca por: "<%= termoBusca %>"
+          <% } else { %>
+            Lista de Produtos
+          <% } %>
+        </h1>
+        <a href="/produtos/novo" class="btn btn-primary">+ Novo Produto</a>
+      </div>
+
+      <!-- Barra de Pesquisa (Desafio Extra) -->
+      <div class="search-filter-bar">
+        <form action="/produtos/pesquisa" method="GET">
+          <input 
+            type="text" 
+            name="termo" 
+            placeholder="Pesquisar produto pelo nome..." 
+            value="<%= termoBusca || '' %>"
+          >
+          <button type="submit" class="btn btn-primary">Buscar</button>
+          <% if (termoBusca || categoriaAtual || categoriaSelecionada) { %>
+            <a href="/produtos" class="btn btn-secondary">Limpar Filtros</a>
+          <% } %>
+        </form>
+      </div>
+
+      <!-- Filtro rápido por Categorias (Desafio 2) -->
+      <div style="margin-bottom: 1.5rem;">
+        <span style="font-size: 0.9rem; font-weight: 600; margin-right: 0.5rem; color: #475569;">Filtrar por Categoria:</span>
+        <div class="filter-categories" style="display: inline-flex; margin-top: 0.5rem;">
+          <a 
+            href="/produtos" 
+            class="badge <%= (!categoriaSelecionada && !categoriaAtual) ? 'badge-active' : '' %>"
+          >
+            Todas
+          </a>
+          <% categorias.forEach(cat => { %>
+            <a 
+              href="/produtos/categoria/<%= cat.id %>" 
+              class="badge <%= ((categoriaSelecionada === cat.id) || (categoriaAtual && categoriaAtual.id === cat.id)) ? 'badge-active' : '' %>"
+            >
+              <%= cat.nome %>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+
+      <% if (categoriaAtual || termoBusca) { %>
+        <div class="active-filter-banner">
+          <span>
+            <% if (categoriaAtual) { %>
+              Exibindo apenas produtos da categoria: <strong><%= categoriaAtual.nome %></strong>
+            <% } %>
+            <% if (termoBusca) { %>
+              Termo pesquisado: <strong><%= termoBusca %></strong>
+            <% } %>
+          </span>
+          <a href="/produtos" style="color: #1e40af; text-decoration: underline; font-size: 0.9rem;">Ver todos os produtos</a>
+        </div>
+      <% } %>
+
+      <!-- Tabela de Produtos -->
+      <% if (produtos.length === 0) { %>
+        <div class="empty-state">
+          <p>Nenhum produto encontrado.</p>
+          <a href="/produtos/novo" class="btn btn-primary">Cadastrar Primeiro Produto</a>
+        </div>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Categoria</th>
+              <th>Preço</th>
+              <th>Quantidade</th>
+              <th style="text-align: right;">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% produtos.forEach(p => { %>
+              <tr>
+                <td>#<%= p.id %></td>
+                <td><strong><%= p.nome %></strong></td>
+                <td>
+                  <% if (p.categoria) { %>
+                    <a href="/produtos/categoria/<%= p.categoria.id %>" class="badge badge-category">
+                      <%= p.categoria.nome %>
+                    </a>
+                  <% } else { %>
+                    <span style="color: #94a3b8; font-size: 0.85rem;">Sem categoria</span>
+                  <% } %>
+                </td>
+                <td>R$ <%= Number(p.preco).toFixed(2).replace('.', ',') %></td>
+                <td><%= p.quantidade %> un.</td>
+                <td style="text-align: right;">
+                  <div class="actions-cell" style="justify-content: flex-end;">
+                    <a href="/produtos/<%= p.id %>/editar" class="btn btn-warning btn-sm">
+                      Editar
+                    </a>
+                    <form action="/produtos/<%= p.id %>/deletar" method="POST" onsubmit="return confirm('Deseja realmente excluir este produto?');">
+                      <button type="submit" class="btn btn-danger btn-sm">
+                        Excluir
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </main>
+
+</body>
+</html>
